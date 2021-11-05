@@ -2,7 +2,6 @@
 !/.gitattributes
 !/.projen/tasks.json
 !/.projen/deps.json
-!/.github/workflows/stale.yml
 !/package.json
 !/LICENSE
 !/.npmignore
@@ -33,7 +32,6 @@ jspm_packages/
 /test-reports/
 junit.xml
 /coverage/
-!/.github/workflows/build.yml
 !/.mergify.yml
 !/.github/pull_request_template.md
 !/test/
@@ -47,4 +45,4 @@ junit.xml
 /cdk.out/
 .cdk.staging/
 .parcel-cache/
-!/.github/workflows/upgrade.yml
+!/.gitpod.yml
