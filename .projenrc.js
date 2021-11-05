@@ -1,3 +1,5 @@
+const fs = require('fs');
+const yaml = require('js-yaml');
 const {
   AwsCdkTypeScriptApp,
   Gitpod,
@@ -6,6 +8,7 @@ const {
 
 const project = new AwsCdkTypeScriptApp({
   cdkVersion: '1.130.0',
+  cdkVersionPinning: true,
   defaultReleaseBranch: 'main',
   name: 'cdk-pipelines-realworld-example',
 
@@ -80,5 +83,15 @@ gitpod.addVscodeExtensions(
   'dbaeumer.vscode-eslint',
   'streetsidesoftware.code-spell-checker-spanish',
 );
+
+// sync cdk version to config
+const configPath = `${__dirname}/config.yml`;
+let configData = yaml.safeLoad(
+  fs.readFileSync(configPath, 'utf8'),
+);
+
+configData.cdkVersion = project.cdkVersion;
+
+fs.writeFileSync(configPath, yaml.dump(configData), 'utf8');
 
 project.synth();
