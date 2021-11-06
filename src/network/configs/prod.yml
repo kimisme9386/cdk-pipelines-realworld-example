@@ -1,0 +1,15 @@
+vpc:
+  maxAzs: 2
+  natGateways: 0
+  ipv6enabled: true
+alb:
+  listener:
+    certificateArn: "arn:aws:acm:ap-northeast-1:143069290742:certificate/ffa70d43-546a-4cea-8327-f1b51a4961cc" # .9incloud.com
+  targetHealthCheck: 
+    enabled: true
+    interval: 30 # unit: seconds
+    path: "/hello"
+    timeout: 5 # unit: seconds
+    healthyThresholdCount: 5
+    unhealthyThresholdCount: 2
+  deregistrationDelay: 60 # unit: seconds

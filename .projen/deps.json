@@ -149,6 +149,11 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-cdk/pipelines",
+      "version": "1.130.0",
+      "type": "runtime"
+    },
+    {
       "name": "@cloudcomponents/cdk-blue-green-container-deployment",
       "version": "^1.40.1",
       "type": "runtime"

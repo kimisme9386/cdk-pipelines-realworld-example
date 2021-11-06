@@ -13,6 +13,7 @@ const project = new AwsCdkTypeScriptApp({
   name: 'cdk-pipelines-realworld-example',
 
   cdkDependencies: [
+    '@aws-cdk/pipelines',
     '@aws-cdk/aws-iam',
     '@aws-cdk/aws-ecr',
     '@aws-cdk/aws-ec2',
