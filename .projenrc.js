@@ -40,7 +40,13 @@ const project = new AwsCdkTypeScriptApp({
   stale: false,
   depsUpgrade: false,
   context: {
-    'availability-zones:account=482631629698:region=ap-northeast-1': [
+    '@aws-cdk/core:newStyleStackSynthesis': true,
+    'availability-zones:account=340227574277:region=ap-northeast-1': [
+      'ap-northeast-1a',
+      'ap-northeast-1c',
+      'ap-northeast-1d',
+    ],
+    'availability-zones:account=143069290742:region=ap-northeast-1': [
       'ap-northeast-1a',
       'ap-northeast-1c',
       'ap-northeast-1d',
