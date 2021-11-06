@@ -10,6 +10,25 @@ export enum DeploymentType {
   BlueGreen = 'BlueGreen',
 }
 
+interface NetworkConfig {
+  vpc: string;
+  alb: {
+    arn: string;
+    listener: {
+      certificateArn: string;
+    };
+    targetHealthCheck: {
+      enabled: boolean;
+      interval: number;
+      path: string;
+      timeout: number;
+      healthyThresholdCount: number;
+      unhealthyThresholdCount: number;
+    };
+    deregistrationDelay: number;
+  };
+};
+
 export interface StageConfig {
   Ecs: {
     memoryLimitMiB: number;
@@ -36,27 +55,12 @@ export interface StageConfig {
   Deployment: {
     type: string;
   };
-  Alb: {
-    listener: {
-      certificateArn: string;
-    };
-    targetHealthCheck: {
-      enabled: boolean;
-      interval: number;
-      path: string;
-      timeout: number;
-      healthyThresholdCount: number;
-      unhealthyThresholdCount: number;
-    };
-    deregistrationDelay: number;
-  };
+  Network: NetworkConfig;
 }
 
 
 interface EcsFargateProps extends cdk.StackProps {
   stageConfig: StageConfig;
-  readonly vpc?: ec2.Vpc;
-  readonly alb?: elbv2.IApplicationLoadBalancer;
 }
 
 export class EcsFargateStack extends cdk.Stack {
@@ -76,8 +80,9 @@ export class EcsFargateStack extends cdk.Stack {
     });
 
     const vpc =
-      props?.vpc ??
-      ec2.Vpc.fromLookup(this, 'DefaultVpc', { isDefault: true });
+      props.stageConfig.Network.vpc ?
+        ec2.Vpc.fromLookup(this, 'fromVpc', { vpcId: props.stageConfig.Network.vpc }) :
+        ec2.Vpc.fromLookup(this, 'DefaultVpc', { isDefault: true });
     const cluster = new ecs.Cluster(this, 'Cluster', {
       vpc: vpc,
     });
@@ -126,7 +131,7 @@ export class EcsFargateStack extends cdk.Stack {
         subnetType:
           props.stageConfig.Ecs.service.assignPublicIp == true
             ? ec2.SubnetType.PUBLIC
-            : ec2.SubnetType.PRIVATE,
+            : ec2.SubnetType.PRIVATE_WITH_NAT,
       }),
       ...ecsServiceProperty,
     });
@@ -137,10 +142,13 @@ export class EcsFargateStack extends cdk.Stack {
       cfnECSService.addPropertyOverride('DeploymentController', 'CODE_DEPLOY');
     }
 
-    if (props?.alb) {
+    if (props) {
+      const fromALB = elbv2.ApplicationLoadBalancer.fromLookup(this, 'fromALB', {
+        loadBalancerArn: props.stageConfig.Network.alb.arn,
+      });
       let alb = this.createAlbListenerAndTargetGroup(
         'Prod',
-        props.alb,
+        fromALB,
         this.service,
         props.stageConfig.Network,
         443,
@@ -154,7 +162,7 @@ export class EcsFargateStack extends cdk.Stack {
         let testAlb =
           this.createAlbListenerAndTargetGroup(
             'Test',
-            props.alb,
+            fromALB,
             this.service,
             props.stageConfig.Network,
             8080,

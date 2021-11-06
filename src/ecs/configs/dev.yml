@@ -16,14 +16,17 @@ Ecs:
 Deployment:
   type: RollingUpdate # RollingUpdate or BlueGreen
 
-Alb:
-  listener:
-    certificateArn: "arn:aws:acm:ap-northeast-1:340227574277:certificate/2e0c79e2-c141-4896-bbd7-4cef6775b314" # .9incloud.com
-  targetHealthCheck: 
-    enabled: true
-    interval: 30 # unit: seconds
-    path: "/hello"
-    timeout: 5 # unit: seconds
-    healthyThresholdCount: 5
-    unhealthyThresholdCount: 2
-  deregistrationDelay: 60 # unit: seconds
+Network:
+  vpc:
+  alb:
+    arn:
+    listener:
+      certificateArn: "arn:aws:acm:ap-northeast-1:340227574277:certificate/2e0c79e2-c141-4896-bbd7-4cef6775b314" # .9incloud.com
+    targetHealthCheck: 
+      enabled: true
+      interval: 30 # unit: seconds
+      path: "/hello"
+      timeout: 5 # unit: seconds
+      healthyThresholdCount: 5
+      unhealthyThresholdCount: 2
+    deregistrationDelay: 60 # unit: seconds

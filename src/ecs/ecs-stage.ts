@@ -13,7 +13,7 @@ enum StageEnv {
   PROD = 'prod',
 }
 
-interface EcsApiStageProps extends StageProps {
+interface EcsStageProps extends StageProps {
   stageEnv: string;
 }
 
@@ -24,7 +24,7 @@ interface EcsApiStageProps extends StageProps {
 export class EcsStage extends Stage {
   private readonly _ecsStack: EcsFargateStack;
 
-  constructor(scope: Construct, id: string, props?: EcsApiStageProps) {
+  constructor(scope: Construct, id: string, props?: EcsStageProps) {
     super(scope, id, props);
 
     const stageEnv = props?.stageEnv;
@@ -34,7 +34,7 @@ export class EcsStage extends Stage {
     }
 
     const stageConfig: StageConfig = readConfig(
-      fs.readFileSync(`${__dirname}/configs/${stageEnv}.yml`, 'utf8'),
+      fs.readFileSync(`${__dirname}/configs/ecs-${stageEnv}.yml`, 'utf8'),
     ) as StageConfig;
 
     this._ecsStack = new EcsFargateStack(this, 'Ecs', {
