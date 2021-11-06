@@ -34,7 +34,7 @@ export class EcsStage extends Stage {
     }
 
     const stageConfig: StageConfig = readConfig(
-      fs.readFileSync(`${__dirname}/configs/ecs-${stageEnv}.yml`, 'utf8'),
+      fs.readFileSync(`${__dirname}/configs/${stageEnv}.yml`, 'utf8'),
     ) as StageConfig;
 
     this._ecsStack = new EcsFargateStack(this, 'Ecs', {
