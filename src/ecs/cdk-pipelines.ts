@@ -1,7 +1,6 @@
 import * as codebuild from '@aws-cdk/aws-codebuild';
 import { Construct, Stack, StackProps } from '@aws-cdk/core';
 import * as pipelines from '@aws-cdk/pipelines';
-import { EcsCodePipelineStage } from './ecs-codepipeline-stage';
 import { EcsStage } from './ecs-stage';
 
 interface CdkPipelinesProps extends StackProps {
@@ -18,7 +17,7 @@ export class CdkPipelines extends Stack {
     super(scope, id, props);
 
     const codePipelineSource = pipelines.CodePipelineSource.connection(
-      'wondercore-devops/wondercise-service-infra',
+      'kimisme9386/cdk-pipelines-realworld-example',
       'main',
       {
         connectionArn:
@@ -28,7 +27,7 @@ export class CdkPipelines extends Stack {
 
     const pipeline = new pipelines.CodePipeline(this, 'Pipeline', {
       // The pipeline name
-      pipelineName: 'NetworkPipelines',
+      pipelineName: 'EcsPipelines',
 
       // How it will be built and synthesized
       synth: new pipelines.ShellStep('Synth', {
@@ -84,38 +83,6 @@ export class CdkPipelines extends Stack {
           commands: [
             'yarn install --frozen-lockfile',
             './node_modules/.bin/jest --passWithNoTests test/ecs-prod.test.ts',
-          ],
-        })],
-      },
-    );
-
-    const ecsCodePipelineWave = pipeline.addWave('EcsCodePipeline');
-
-    ecsCodePipelineWave.addStage(
-      new EcsCodePipelineStage(this, 'Dev', {
-        env: { account: props.devAccount, region: 'ap-northeast-1' },
-        stageEnv: 'dev',
-      }),
-      {
-        pre: [new pipelines.ShellStep('Validate dev CloudFormation Synth', {
-          commands: [
-            'yarn install --frozen-lockfile',
-            './node_modules/.bin/jest --passWithNoTests test/ecs-codepipeline-dev.test.ts',
-          ],
-        })],
-      },
-    );
-
-    ecsCodePipelineWave.addStage(
-      new EcsCodePipelineStage(this, 'Production', {
-        env: { account: props.prodAccount, region: 'ap-northeast-1' },
-        stageEnv: 'prod',
-      }),
-      {
-        pre: [new pipelines.ShellStep('Validate staging CloudFormation Synth', {
-          commands: [
-            'yarn install --frozen-lockfile',
-            './node_modules/.bin/jest --passWithNoTests test/ecs-codepipeline-prod.test.ts',
           ],
         })],
       },

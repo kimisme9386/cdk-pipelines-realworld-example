@@ -17,7 +17,7 @@ export class CdkPipelines extends Stack {
     super(scope, id, props);
 
     const codePipelineSource = pipelines.CodePipelineSource.connection(
-      'wondercore-devops/wondercise-service-infra',
+      'kimisme9386/cdk-pipelines-realworld-example',
       'main',
       {
         connectionArn:
