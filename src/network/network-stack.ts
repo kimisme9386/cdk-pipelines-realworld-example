@@ -9,20 +9,6 @@ export interface StageConfig {
       natGateways: number;
       ipv6enabled: boolean;
   };
-  alb: {
-      listener: {
-      certificateArn: string;
-      };
-      targetHealthCheck: {
-      enabled: boolean;
-      interval: number;
-      path: string;
-      timeout: number;
-      healthyThresholdCount: number;
-      unhealthyThresholdCount: number;
-      };
-      deregistrationDelay: number;
-  };
 }
   
 

@@ -1,11 +1,11 @@
 import * as codebuild from '@aws-cdk/aws-codebuild';
 import { Construct, Stack, StackProps } from '@aws-cdk/core';
 import * as pipelines from '@aws-cdk/pipelines';
-import { EcsApiStage } from './ecs-api-stage';
+import { EcsStage } from './ecs-stage';
 
 interface CdkPipelinesProps extends StackProps {
   cdkVersion: string;
-  stagingAccount: string;
+  devAccount: string;
   prodAccount: string;
 }
 
@@ -17,7 +17,7 @@ export class CdkPipelines extends Stack {
     super(scope, id, props);
 
     const codePipelineSource = pipelines.CodePipelineSource.connection(
-      'kimisme9386/cdk-pipelines-realworld-example',
+      'wondercore-devops/wondercise-service-infra',
       'main',
       {
         connectionArn:
@@ -27,7 +27,7 @@ export class CdkPipelines extends Stack {
 
     const pipeline = new pipelines.CodePipeline(this, 'Pipeline', {
       // The pipeline name
-      pipelineName: 'EcsCdkPipelines',
+      pipelineName: 'NetworkPipelines',
 
       // How it will be built and synthesized
       synth: new pipelines.ShellStep('Synth', {
@@ -56,25 +56,25 @@ export class CdkPipelines extends Stack {
       },
     });
 
-    const envWave = pipeline.addWave('EcsAPI');
+    const envWave = pipeline.addWave('Network');
 
     envWave.addStage(
-      new EcsApiStage(this, 'Staging', {
-        env: { account: props.stagingAccount, region: 'ap-northeast-1' },
-        stageEnv: 'staging',
+      new EcsStage(this, 'Dev', {
+        env: { account: props.devAccount, region: 'ap-northeast-1' },
+        stageEnv: 'dev',
       }),
       {
-        pre: [new pipelines.ShellStep('Validate staging CloudFormation Synth', {
+        pre: [new pipelines.ShellStep('Validate dev CloudFormation Synth', {
           commands: [
             'yarn install --frozen-lockfile',
-            './node_modules/.bin/jest --passWithNoTests test/ecs-api-staging.test.ts',
+            './node_modules/.bin/jest --passWithNoTests test/network-dev.test.ts',
           ],
         })],
       },
     );
 
     envWave.addStage(
-      new EcsApiStage(this, 'Prod', {
+      new EcsStage(this, 'Production', {
         env: { account: props.prodAccount, region: 'ap-northeast-1' },
         stageEnv: 'prod',
       }),
@@ -82,7 +82,7 @@ export class CdkPipelines extends Stack {
         pre: [new pipelines.ShellStep('Validate staging CloudFormation Synth', {
           commands: [
             'yarn install --frozen-lockfile',
-            './node_modules/.bin/jest --passWithNoTests test/ecs-api-prod.test.ts',
+            './node_modules/.bin/jest --passWithNoTests test/network-staging.test.ts',
           ],
         })],
       },

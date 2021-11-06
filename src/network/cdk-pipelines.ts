@@ -6,7 +6,6 @@ import { NetworkStage } from './network-stage';
 interface CdkPipelinesProps extends StackProps {
   cdkVersion: string;
   devAccount: string;
-  stagingAccount: string;
   prodAccount: string;
 }
 
@@ -76,7 +75,7 @@ export class CdkPipelines extends Stack {
 
     envWave.addStage(
       new NetworkStage(this, 'Production', {
-        env: { account: props.stagingAccount, region: 'ap-northeast-1' },
+        env: { account: props.prodAccount, region: 'ap-northeast-1' },
         stageEnv: 'prod',
       }),
       {

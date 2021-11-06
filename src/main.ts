@@ -1,5 +1,7 @@
 import * as fs from 'fs';
 import { App } from '@aws-cdk/core';
+import { CdkPipelines as EcsCdkPipelines } from './ecs/cdk-pipelines';
+import { CdkPipelines as NetworkCdkPipelines } from './network/cdk-pipelines';
 import { readConfig } from './utils';
 
 
@@ -7,7 +9,6 @@ export interface GlobalConfig {
   cdkVersion: string;
   account: {
     dev: string;
-    staging: string;
     prod: string;
   };
 }
@@ -18,14 +19,23 @@ const globalConfig: GlobalConfig = readConfig(
   fs.readFileSync(`${__dirname}/../config.yml`, 'utf8'),
 ) as GlobalConfig;
 
-new NetworkCdkPipelines(app, 'WonderciseNetwork', {
+new NetworkCdkPipelines(app, 'TestNetwork', {
   env: {
-    account: '001247437748',
+    account: '794029059620',
     region: 'ap-northeast-1',
   },
   cdkVersion: globalConfig.cdkVersion,
   devAccount: globalConfig.account.dev,
-  stagingAccount: globalConfig.account.staging,
+  prodAccount: globalConfig.account.prod,
+});
+
+new EcsCdkPipelines(app, 'TestEcs', {
+  env: {
+    account: '794029059620',
+    region: 'ap-northeast-1',
+  },
+  cdkVersion: globalConfig.cdkVersion,
+  devAccount: globalConfig.account.dev,
   prodAccount: globalConfig.account.prod,
 });
 

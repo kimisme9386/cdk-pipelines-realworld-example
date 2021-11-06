@@ -1,10 +1,24 @@
-vpc:
-  maxAzs: 2
-  natGateways: 0
-  ipv6enabled: true
-alb:
+Ecs:
+  memoryLimitMiB: 512
+  cpu: 256
+  family: rest-api
+  container:
+    name: RestApiContainer
+    environment:
+      STAGE: lab  
+  service:
+    desiredCount: 0
+    minHealthyPercent: 100
+    maxHealthyPercent: 200
+    circuitBreakerRollback: false
+    assignPublicIp: true  # Value is true and ECS Service Subnet type is public, Value is false and ECS Service Subnet type is private.
+
+Deployment:
+  type: RollingUpdate # RollingUpdate or BlueGreen
+
+Alb:
   listener:
-    certificateArn: "arn:aws:acm:ap-northeast-1:482631629698:certificate/6ba7f53f-b622-4627-b880-955c382245de" # .9incloud.com
+    certificateArn: "arn:aws:acm:ap-northeast-1:340227574277:certificate/2e0c79e2-c141-4896-bbd7-4cef6775b314" # .9incloud.com
   targetHealthCheck: 
     enabled: true
     interval: 30 # unit: seconds
