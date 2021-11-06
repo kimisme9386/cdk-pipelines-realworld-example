@@ -82,7 +82,7 @@ export class CdkPipelines extends Stack {
         pre: [new pipelines.ShellStep('Validate staging CloudFormation Synth', {
           commands: [
             'yarn install --frozen-lockfile',
-            './node_modules/.bin/jest --passWithNoTests test/network-staging.test.ts',
+            './node_modules/.bin/jest --passWithNoTests test/network-prod.test.ts',
           ],
         })],
       },
