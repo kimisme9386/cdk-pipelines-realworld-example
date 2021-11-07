@@ -17,9 +17,9 @@ Deployment:
   type: RollingUpdate # RollingUpdate or BlueGreen
 
 Network:
-  vpc:
-  Alb:
-    arn:
+  vpc: "vpc-024cbc8e1b5210881"
+  alb:
+    arn: "arn:aws:elasticloadbalancing:ap-northeast-1:143069290742:loadbalancer/app/Produ-Alb16-1IT9GZKZ7DEBK/6e945955abf08d99"
     listener:
       certificateArn: "arn:aws:acm:ap-northeast-1:143069290742:certificate/ffa70d43-546a-4cea-8327-f1b51a4961cc" # .9incloud.com
     targetHealthCheck: 

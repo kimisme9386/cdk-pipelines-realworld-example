@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { App } from '@aws-cdk/core';
-// import { CdkPipelines as EcsCdkPipelines } from './ecs/cdk-pipelines';
+import { CdkPipelines as EcsCdkPipelines } from './ecs/cdk-pipelines';
 import { CdkPipelines as NetworkCdkPipelines } from './network/cdk-pipelines';
 import { readConfig } from './utils';
 
@@ -29,14 +29,14 @@ new NetworkCdkPipelines(app, 'TestNetwork', {
   prodAccount: globalConfig.account.prod,
 });
 
-// new EcsCdkPipelines(app, 'TestEcs', {
-//   env: {
-//     account: '794029059620',
-//     region: 'ap-northeast-1',
-//   },
-//   cdkVersion: globalConfig.cdkVersion,
-//   devAccount: globalConfig.account.dev,
-//   prodAccount: globalConfig.account.prod,
-// });
+new EcsCdkPipelines(app, 'TestEcs', {
+  env: {
+    account: '794029059620',
+    region: 'ap-northeast-1',
+  },
+  cdkVersion: globalConfig.cdkVersion,
+  devAccount: globalConfig.account.dev,
+  prodAccount: globalConfig.account.prod,
+});
 
 app.synth();

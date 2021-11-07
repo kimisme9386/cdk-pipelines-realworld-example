@@ -1,0 +1,395 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EcsApiStage Snapshot 1`] = `
+Object {
+  "Resources": Object {
+    "AlbProdListenerE48B492A": Object {
+      "Properties": Object {
+        "Certificates": Array [
+          Object {
+            "CertificateArn": "arn:aws:acm:ap-northeast-1:340227574277:certificate/2e0c79e2-c141-4896-bbd7-4cef6775b314",
+          },
+        ],
+        "DefaultActions": Array [
+          Object {
+            "TargetGroupArn": Object {
+              "Ref": "AlbProdListenerECSForProdGroup5E485C4F",
+            },
+            "Type": "forward",
+          },
+        ],
+        "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/application/my-load-balancer/50dc6c495c0c9188",
+        "Port": 443,
+        "Protocol": "HTTPS",
+        "SslPolicy": "ELBSecurityPolicy-2016-08",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    },
+    "AlbProdListenerECSForProdGroup5E485C4F": Object {
+      "Properties": Object {
+        "HealthCheckEnabled": true,
+        "HealthCheckIntervalSeconds": 30,
+        "HealthCheckPath": "/hello",
+        "HealthCheckTimeoutSeconds": 5,
+        "HealthyThresholdCount": 5,
+        "Matcher": Object {
+          "HttpCode": "200",
+        },
+        "Port": 80,
+        "Protocol": "HTTP",
+        "TargetGroupAttributes": Array [
+          Object {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "60",
+          },
+          Object {
+            "Key": "stickiness.enabled",
+            "Value": "false",
+          },
+        ],
+        "TargetType": "ip",
+        "UnhealthyThresholdCount": 2,
+        "VpcId": "vpc-12345",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "AlbProdListenerRule219466EA": Object {
+      "Properties": Object {
+        "Actions": Array [
+          Object {
+            "FixedResponseConfig": Object {
+              "ContentType": "application/json",
+              "MessageBody": "",
+              "StatusCode": "200",
+            },
+            "Type": "fixed-response",
+          },
+        ],
+        "Conditions": Array [
+          Object {
+            "Field": "path-pattern",
+            "PathPatternConfig": Object {
+              "Values": Array [
+                "/status",
+              ],
+            },
+          },
+        ],
+        "ListenerArn": Object {
+          "Ref": "AlbProdListenerE48B492A",
+        },
+        "Priority": 10,
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
+    },
+    "ClusterEB0386A7": Object {
+      "Type": "AWS::ECS::Cluster",
+    },
+    "EcsLogGroupD0138CE7": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "RetentionInDays": 731,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "Repository22E53BBD": Object {
+      "DeletionPolicy": "Delete",
+      "Type": "AWS::ECR::Repository",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "ServiceD69D759B": Object {
+      "DependsOn": Array [
+        "AlbProdListenerECSForProdGroup5E485C4F",
+        "AlbProdListenerE48B492A",
+      ],
+      "Properties": Object {
+        "Cluster": Object {
+          "Ref": "ClusterEB0386A7",
+        },
+        "DeploymentConfiguration": Object {
+          "DeploymentCircuitBreaker": Object {
+            "Enable": true,
+            "Rollback": false,
+          },
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 100,
+        },
+        "DeploymentController": Object {
+          "Type": "ECS",
+        },
+        "DesiredCount": 0,
+        "EnableECSManagedTags": false,
+        "HealthCheckGracePeriodSeconds": 0,
+        "LaunchType": "FARGATE",
+        "LoadBalancers": Array [
+          Object {
+            "ContainerName": "RestApiContainer",
+            "ContainerPort": 80,
+            "TargetGroupArn": Object {
+              "Ref": "AlbProdListenerECSForProdGroup5E485C4F",
+            },
+          },
+        ],
+        "NetworkConfiguration": Object {
+          "AwsvpcConfiguration": Object {
+            "AssignPublicIp": "ENABLED",
+            "SecurityGroups": Array [
+              Object {
+                "Fn::GetAtt": Array [
+                  "ServiceSecurityGroupC96ED6A7",
+                  "GroupId",
+                ],
+              },
+            ],
+            "Subnets": Array [
+              "s-12345",
+              "s-67890",
+            ],
+          },
+        },
+        "TaskDefinition": Object {
+          "Ref": "TaskDef54694570",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "ServiceSecurityGroupC96ED6A7": Object {
+      "Properties": Object {
+        "GroupDescription": "Dev/Ecs/Service/SecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": "vpc-12345",
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "ServiceSecurityGroupfromDevEcsfromALBSecurityGroupsg12341CAEF23D8053BDA37B": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "FromPort": 80,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "ServiceSecurityGroupC96ED6A7",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": "sg-12345",
+        "ToPort": 80,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "TaskDef54694570": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Environment": Array [
+              Object {
+                "Name": "STAGE",
+                "Value": "lab",
+              },
+            ],
+            "Essential": true,
+            "Image": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  Object {
+                    "Fn::Select": Array [
+                      4,
+                      Object {
+                        "Fn::Split": Array [
+                          ":",
+                          Object {
+                            "Fn::GetAtt": Array [
+                              "Repository22E53BBD",
+                              "Arn",
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  ".dkr.ecr.",
+                  Object {
+                    "Fn::Select": Array [
+                      3,
+                      Object {
+                        "Fn::Split": Array [
+                          ":",
+                          Object {
+                            "Fn::GetAtt": Array [
+                              "Repository22E53BBD",
+                              "Arn",
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  ".",
+                  Object {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/",
+                  Object {
+                    "Ref": "Repository22E53BBD",
+                  },
+                  ":latest",
+                ],
+              ],
+            },
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "EcsLogGroupD0138CE7",
+                },
+                "awslogs-region": "ap-northeast-1",
+                "awslogs-stream-prefix": "ecs",
+              },
+            },
+            "Name": "RestApiContainer",
+            "PortMappings": Array [
+              Object {
+                "ContainerPort": 80,
+                "HostPort": 80,
+                "Protocol": "tcp",
+              },
+            ],
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "TaskDefExecutionRoleB4775C97",
+            "Arn",
+          ],
+        },
+        "Family": "rest-api",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": Array [
+          "FARGATE",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "TaskDefTaskRole1EDB4A67",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "TaskDefExecutionRoleB4775C97": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "TaskDefExecutionRoleDefaultPolicy0DBB737A": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "Repository22E53BBD",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "EcsLogGroupD0138CE7",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "TaskDefExecutionRoleDefaultPolicy0DBB737A",
+        "Roles": Array [
+          Object {
+            "Ref": "TaskDefExecutionRoleB4775C97",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "TaskDefTaskRole1EDB4A67": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "fromALBSecurityGroupsg1234from000004439849E056": Object {
+      "Properties": Object {
+        "CidrIp": "0.0.0.0/0",
+        "Description": "Allow from anyone on port 443",
+        "FromPort": 443,
+        "GroupId": "sg-12345",
+        "IpProtocol": "tcp",
+        "ToPort": 443,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "fromALBSecurityGroupsg1234from0443BBCE854E": Object {
+      "Properties": Object {
+        "CidrIpv6": "::/0",
+        "Description": "Allow from anyone on port 443",
+        "FromPort": 443,
+        "GroupId": "sg-12345",
+        "IpProtocol": "tcp",
+        "ToPort": 443,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+  },
+}
+`;
