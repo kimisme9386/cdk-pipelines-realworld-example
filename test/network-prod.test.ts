@@ -10,7 +10,7 @@ test('EcsApiStage Snapshot', () => {
   const app = new App();
 
   const globalConfig: GlobalConfig = readConfig(
-    fs.readFileSync(`${__dirname}/../configs/network.yml`, 'utf8'),
+    fs.readFileSync(`${__dirname}/../config.yml`, 'utf8'),
   ) as GlobalConfig;
 
   const networkStage = new NetworkStage(app, 'prod', {

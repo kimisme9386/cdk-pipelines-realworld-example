@@ -1,0 +1,389 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EcsApiStage Snapshot 1`] = `
+Object {
+  "Resources": Object {
+    "Alb16C2F182": Object {
+      "DependsOn": Array [
+        "VpcingressSubnet1DefaultRoute4188A546",
+        "VpcingressSubnet2DefaultRoute18203BC3",
+      ],
+      "Properties": Object {
+        "IpAddressType": "dualstack",
+        "LoadBalancerAttributes": Array [
+          Object {
+            "Key": "deletion_protection.enabled",
+            "Value": "false",
+          },
+        ],
+        "Scheme": "internet-facing",
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "AlbSecurityGroup580F65A6",
+              "GroupId",
+            ],
+          },
+        ],
+        "Subnets": Array [
+          Object {
+            "Ref": "VpcingressSubnet1Subnet059F22C6",
+          },
+          Object {
+            "Ref": "VpcingressSubnet2SubnetF175D754",
+          },
+        ],
+        "Type": "application",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    },
+    "AlbSecurityGroup580F65A6": Object {
+      "Properties": Object {
+        "GroupDescription": "Automatically created Security Group for ELB devNetworkAlbC9236992",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "255.255.255.255/32",
+            "Description": "Disallow all traffic",
+            "FromPort": 252,
+            "IpProtocol": "icmp",
+            "ToPort": 86,
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "Ipv6Cidr": Object {
+      "DependsOn": Array [
+        "Vpc8378EB38",
+      ],
+      "Properties": Object {
+        "AmazonProvidedIpv6CidrBlock": true,
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::VPCCidrBlock",
+    },
+    "Vpc8378EB38": Object {
+      "Properties": Object {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "dev/Network/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "VpcIGWD7BA715C": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "dev/Network/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "VpcVPCGWBF912B6E": Object {
+      "Properties": Object {
+        "InternetGatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+    "VpcingressSubnet1DefaultRoute4188A546": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcingressSubnet1RouteTable804C7A26",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcingressSubnet1RouteTable804C7A26": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "dev/Network/Vpc/ingressSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcingressSubnet1RouteTableAssociation5DF54E70": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcingressSubnet1RouteTable804C7A26",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcingressSubnet1Subnet059F22C6",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcingressSubnet1Subnet059F22C6": Object {
+      "DependsOn": Array [
+        "Ipv6Cidr",
+      ],
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.0.0/24",
+        "Ipv6CidrBlock": Object {
+          "Fn::Select": Array [
+            0,
+            Object {
+              "Fn::Cidr": Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "Vpc8378EB38",
+                        "Ipv6CidrBlocks",
+                      ],
+                    },
+                  ],
+                },
+                2,
+                "64",
+              ],
+            },
+          ],
+        },
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "ingress",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "dev/Network/Vpc/ingressSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcingressSubnet2DefaultRoute18203BC3": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcingressSubnet2RouteTable8B0E23A7",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcingressSubnet2RouteTable8B0E23A7": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "dev/Network/Vpc/ingressSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcingressSubnet2RouteTableAssociation39E1BA3A": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcingressSubnet2RouteTable8B0E23A7",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcingressSubnet2SubnetF175D754",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcingressSubnet2SubnetF175D754": Object {
+      "DependsOn": Array [
+        "Ipv6Cidr",
+      ],
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.1.0/24",
+        "Ipv6CidrBlock": Object {
+          "Fn::Select": Array [
+            1,
+            Object {
+              "Fn::Cidr": Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "Vpc8378EB38",
+                        "Ipv6CidrBlocks",
+                      ],
+                    },
+                  ],
+                },
+                2,
+                "64",
+              ],
+            },
+          ],
+        },
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "ingress",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "dev/Network/Vpc/ingressSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcrdsSubnet1RouteTableAssociationE01668F2": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcrdsSubnet1RouteTableE62E4ED6",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcrdsSubnet1SubnetC2926CEA",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcrdsSubnet1RouteTableE62E4ED6": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "dev/Network/Vpc/rdsSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcrdsSubnet1SubnetC2926CEA": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.2.0/28",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "rds",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Isolated",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "dev/Network/Vpc/rdsSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcrdsSubnet2RouteTable3E531D9B": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "dev/Network/Vpc/rdsSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcrdsSubnet2RouteTableAssociation25A7BD68": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcrdsSubnet2RouteTable3E531D9B",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcrdsSubnet2Subnet70A835C8",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcrdsSubnet2Subnet70A835C8": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.2.16/28",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "rds",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Isolated",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "dev/Network/Vpc/rdsSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+  },
+}
+`;
