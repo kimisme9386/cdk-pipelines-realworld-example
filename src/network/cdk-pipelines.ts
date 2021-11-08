@@ -43,17 +43,7 @@ export class CdkPipelines extends Stack {
         ],
       }),
       crossAccountKeys: true,
-      selfMutationCodeBuildDefaults: {
-        partialBuildSpec: codebuild.BuildSpec.fromObject({
-          phases: {
-            pre_build: {
-              commands: [
-                `npm install -g aws-cdk@${props.cdkVersion}`,
-              ],
-            },
-          },
-        }),
-      },
+      cliVersion: props.cdkVersion,
     });
 
     const envWave = pipeline.addWave('Network');
