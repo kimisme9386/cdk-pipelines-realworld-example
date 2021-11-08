@@ -2,8 +2,8 @@ import '@aws-cdk/assert/jest';
 import * as fs from 'fs';
 import { SynthUtils } from '@aws-cdk/assert';
 import { App } from '@aws-cdk/core';
-import { GlobalConfig } from '../src/main';
 import { EcsStage } from '../src/ecs/ecs-stage';
+import { GlobalConfig } from '../src/main';
 import { readConfig } from '../src/utils';
 
 test('EcsApiStage Snapshot', () => {
