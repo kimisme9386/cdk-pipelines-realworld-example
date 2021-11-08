@@ -74,21 +74,7 @@ ecsWave.addStage(
 
 - #### Fixed CDK version
 
-CDK Pipelines doesn't support to specify fixed CDK version so far. It always use latest CDK version. Use workarond like below if you want:
-
-```ts
-selfMutationCodeBuildDefaults: {
-  partialBuildSpec: codebuild.BuildSpec.fromObject({
-    phases: {
-      pre_build: {
-        commands: [
-          `npm install -g aws-cdk@${props.cdkVersion}`,
-        ],
-      },
-    },
-  }),
-},
-```
+It can use `cliVersion` prop to specify cdk version. Reference [here](https://github.com/kimisme9386/cdk-pipelines-realworld-example/blob/main/src/ecs/cdk-pipelines.ts#L45)
 
 ## Local development and test deployment
 
