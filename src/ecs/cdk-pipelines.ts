@@ -1,4 +1,3 @@
-import * as codebuild from '@aws-cdk/aws-codebuild';
 import { Construct, Stack, StackProps } from '@aws-cdk/core';
 import * as pipelines from '@aws-cdk/pipelines';
 import { EcsStage } from './ecs-stage';
@@ -43,17 +42,7 @@ export class CdkPipelines extends Stack {
         ],
       }),
       crossAccountKeys: true,
-      selfMutationCodeBuildDefaults: {
-        partialBuildSpec: codebuild.BuildSpec.fromObject({
-          phases: {
-            pre_build: {
-              commands: [
-                `npm install -g aws-cdk@${props.cdkVersion}`,
-              ],
-            },
-          },
-        }),
-      },
+      cliVersion: props.cdkVersion,
     });
 
     const ecsWave = pipeline.addWave('Ecs');
